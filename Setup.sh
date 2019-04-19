@@ -21,17 +21,17 @@ do
 	
 	case $answer in
 		[1]*)
-			./InstallPrometheus.sh
-			./InstallingNodeExporter.sh
-			./AddNodeToConfig.sh
-			./InstallGrafana.sh
-			./InstallAlertmanager.sh	
+			./Scripts/InstallPrometheus.sh
+			./Scripts/InstallingNodeExporter.sh
+			./Scripts/AddNodeToConfig.sh
+			./Scripts/InstallGrafana.sh
+			./Scripts/InstallAlertmanager.sh	
 			;;
 		[2]*)
-			./InstallPrometheus.sh
+			./Scripts/InstallPrometheus.sh
 			;;
 		[3]*)
-			./Uninstall.pl
+			./Scripts/Uninstall.pl
 			;;
 		[4]*)
 			exit 0
