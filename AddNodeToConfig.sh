@@ -2,7 +2,7 @@
 
 
 
-if [ "root" != `whoami`]
+if [ "root" != `whoami` ]
 then
 	echo "You are not in sudo mode, pls execute the script with the correct privilege"
 	exit 1

@@ -4,7 +4,7 @@
 # Author: Clément Allavena #
 ############################
 
-file_name = node-exporter-files
+file_name = node_exporter
 
 echo "Make sure you execute this script in sudo mode"
 
@@ -24,10 +24,11 @@ echo "Is this the good link ? $link"
 echo "[y/N]: "
 read answer
 
-if [ "$answer" == "n" ] || [ -z "$answer" ]
+if [[ $answer =~ [nN].* ]] || [[ -z $answer ]]
 then
   exit 1
 fi
+
 
 echo "dowloading the source using the link.."
 wget $link                                                                                                                                                                           
@@ -65,7 +66,13 @@ sudo systemctl status node_exporter
 echo "Do you want to enable the service ? [y/N]"
 read answer
 
-if [ -z $answer  ] || [ $answer == "N" ]
+
+if [[ $answer =~ [nN].* ]] || [[ -z $answer ]]
+then
+  exit 1
+fi
+
+if [[ -z $answer  ]] || [[ $answer =~ [nN].* ]]
 then
 	echo "The service is not enable"
 	echo "Don't forget to add a job_name: 'node_exporter' to the configuration file of prometheus! (cf README)"

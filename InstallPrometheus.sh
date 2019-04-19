@@ -21,10 +21,11 @@ echo "Is this the good link ? $link"
 echo "[y/N]: "
 read answer
 
-if [ "$answer" == "n" ] || [ -z "$answer" ]
+if [[ $answer =~ [nN].* ]] || [[ -z $answer ]]
 then
-	exit 1
+  exit 1
 fi
+
 
 echo "Creation of a Prometheus user and required directories, and make user as the owner"
 sudo useradd --no-create-home --shell /bin/false prometheus
@@ -101,9 +102,9 @@ systemctl status prometheus
 echo "Do you want to enable the prometheus service ? [y/N]"
 read answer
 
-if [ "$answer" == "n" ] || [ -z "$answer" ]
+if [[ $answer =~ [nN].* ]] || [[ -z $answer ]]
 then
-	exit 0
+  exit 1
 fi
 
 sudo systemctl enable prometheus
