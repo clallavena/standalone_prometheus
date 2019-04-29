@@ -12,9 +12,11 @@ do
 		# Install Prometheus #
 			~ Menu ~
 1) Install all basics (Grafana, node_exporter, Prometheus, AlertManager w/ rules.yml)
-2) Install only Prometheus with basic settings
-3) Uninstall
-4) Exit menu 
+2) Install Prometheus with Grafana
+3) Install only Prometheus with basic settings
+4) Install AlertManager and add to configuration ( need Prometheus install ! )
+5) Uninstall
+6) Exit menu 
 	"
   
 	read answer
@@ -29,11 +31,18 @@ do
 			;;
 		[2]*)
 			./Scripts/InstallPrometheus.sh
+			./Scripts/InstallGrafana.sh
 			;;
 		[3]*)
-			./Scripts/Uninstall.pl
+			./Scripts/InstallPrometheus.sh
 			;;
 		[4]*)
+			./Scripts/InstallAlertmanager.sh
+			;;
+		[5]*)
+			./Scripts/Uninstall.pl
+			;;
+		[6]*)
 			exit 0
 			;;
 

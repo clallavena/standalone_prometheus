@@ -25,7 +25,7 @@ fi
 echo "dowloading the source using the link.."
 wget $link
 tar -xvf `echo $link | gawk -F"/" '{print $NF}'`
-mv `echo $link | gawk -F"/" '{split($NF, A, /[:alnum:]*\.tar/) ; print A[1]}'` $file_name
+mv `echo $link | gawk -F"/" '{split($NF, A, /[[:alnum:]]*\.tar/) ; print A[1]}'` $file_name
 
 sudo cp $file_name/alertmanager /usr/local/bin
 
@@ -114,7 +114,7 @@ ExecStart=/usr/local/bin/alertmanager \
 
 [Install]
 WantedBy=mutli-user.target_match
-" >> /etc/systemd/system/alertmanager.service
+" > /etc/systemd/system/alertmanager.service
 
 sudo systemctl daemon-reload
 sudo systemctl start alertmanager.service
@@ -145,14 +145,14 @@ groups:
 " >> /etc/prometheus/rules.yml
 
 echo "Do you want to enable the alertmanager.service ? [y/N]"
+systemctl status alertmanager.service
 
 read answer
 
 if [[ $answer =~ [nN].* ]] || [[ -z $answer ]]
 then
-  exit 1
+  exit 0
 fi
 
-sudo systemctl enable alertmanager
-
+sudo systemctl enable alertmanagers
 
