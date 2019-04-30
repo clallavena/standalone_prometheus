@@ -4,13 +4,17 @@
 # Author: Clément Allavena #
 ###########################
 
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m'
+
 if [ 'root' != `whoami` ]
 then
-	echo "Please execute the script with the right privilige"
+	echo -e  "${RED}Please execute the script with the right privilige"
 	exit 1
 fi
 
-echo "Updating the system..."
+echo -e "${GREEN}[INFO] Updating the system..."
 sudo yum update -y || sudo dnf update || sudo apt update
 
 echo "Go to https://prometheus.io/download/ and get the latest download link for Linux binary "
@@ -27,14 +31,14 @@ then
 fi
 
 
-echo "Creation of a Prometheus user and required directories, and make user as the owner"
+echo -e "${GREEN}[INFO] Creation of a Prometheus user and required directories, and make user as the owner"
 sudo useradd --no-create-home --shell /bin/false prometheus
 sudo mkdir /etc/prometheus
 sudo mkdir /var/lib/prometheus
 sudo chown prometheus:prometheus /etc/prometheus
 sudo chown prometheus:prometheus /var/lib/prometheus
 
-echo "dowloading the source using the link.."
+echo -e "${GREEN}[INFO] dowloading the source using the link.."
 wget $link
 tar -xvf `echo $link | gawk -F"/" '{print $NF}'`
 mv `echo $link | gawk -F"/" '{split($NF, A, /[:alnum:]*\.tar/) ; print A[1]}'` prometheus-files
@@ -90,13 +94,13 @@ ExecStart=/usr/local/bin/prometheus \
 WantedBy=multi-user.target
 " > /etc/systemd/system/prometheus.service
 
-echo "If you want to change your start configuration of prometheus, please check the prometheus.service at /etc/systemd/system/prometheus.service"
+echo -e "${GREEN}[INFO] If you want to change your start configuration of prometheus, please check the prometheus.service at /etc/systemd/system/prometheus.service"
 
 echo "reloading of the system service..."
 sudo systemctl daemon-reload
 sudo systemctl start prometheus
 
-echo "Don't forget to check the prometheus service with: systemctl status prometheus"
+echo -e "${GREEN}Don't forget to check the prometheus service with: systemctl status prometheus"
 systemctl status prometheus
 
 echo "Do you want to enable the prometheus service ? [y/N]"
@@ -108,4 +112,4 @@ then
 fi
 
 sudo systemctl enable prometheus
-"Prometheus service is enable"
+echo -e "${GREEN}Prometheus service is enable"

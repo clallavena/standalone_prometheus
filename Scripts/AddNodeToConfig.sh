@@ -11,6 +11,12 @@ then
 	exit 1
 fi
 
+if [[ ! -f /etc/prometheus/prometheus.yml  ]]
+then
+	echo -e "${RED} Files /etc/prometheus/prometheus.yml does not exist, pls check that you have done the Prometheus install correctly "
+	exit 2
+fi
+
 echo "
 	- job_name: 'node_exporter'
   	scrape_interval: 5s

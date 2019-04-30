@@ -1,19 +1,41 @@
 #!/bin/bash
 
+## Return 1 if you're not in sudo mode
+## Return 2 if a files is missing
+## Return 3 if a directory is missing
+
+
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+
 file_name=alertmanager
 smtpHost=mtarelay.dsi.uca.fr:25
 
 if [ "root" != `whoami` ]
 then
-	echo "You're not in sudo mode, pls execute this script with the correct privilege"
+	echo -e  "${RED}You're not in sudo mode, pls execute this script with the correct privilege"
 	exit 1
 fi
 
-echo "Get the link of the latest version of alertmanager at : https://prometheus.io/download/#alertmanager, Linux binary"
+if [[ ! -d /etc/prometheus/  ]]
+then
+	echo -e "${RED} Directory /etc/prometheus/ does not exist, pls check that you have done the Prometheus install correctly "
+	exit 3
+fi
+
+if [[ ! -f /etc/prometheus/prometheus.yml  ]]
+then
+	echo -e "${RED} Files /etc/prometheus/prometheus.yml does not exist, and it is needed for the installation of AlertManager, pls check that you have done the Prometheus install correctly "
+	exit 2
+fi
+
+echo -e "${GREEN}Get the link of the latest version of alertmanager at : https://prometheus.io/download/#alertmanager, Linux binary"
 
 read link
 
-echo "Is this the good link ? $link"
+echo -e "${GREEN}Is this the good link ? $link"
 echo "[y/N]: "
 read answer
 
@@ -22,21 +44,21 @@ then
   exit 1
 fi
 
-echo "dowloading the source using the link.."
+echo -e  "${GREEN}dowloading the source using the link.."
 wget $link
 tar -xvf `echo $link | gawk -F"/" '{print $NF}'`
 mv `echo $link | gawk -F"/" '{split($NF, A, /[:alnum:]*\.tar/) ; print A[1]}'` $file_name
 
 sudo cp $file_name/alertmanager /usr/local/bin
 
-echo "Creation of the user alertmanager..."
+echo -e  "${GREEN}Creation of the user alertmanager..."
 sudo useradd --no-create-home --shell /bin/false alertmanager
 sudo mkdir -p /etc/alertmanager
 sudo mkdir -p /var/lib/alertmanager/data 
 sudo chown -R alertmanager. /var/lib/alertmanager
 
-echo "Configuration of alertmanager..."
-echo "Do you want to change the smtp host ? (default: mtarelay.dsi.uca.fr:25) [y/N]"
+echo -e  "${GREEN}Configuration of alertmanager..."
+echo -e  "${GREEN}Do you want to change the smtp host ? (default: mtarelay.dsi.uca.fr:25) [y/N]"
 read answer
 
 if [[ $answer =~ [yY].* ]]
@@ -45,13 +67,13 @@ then
 	read smtpHost
 fi
 
-echo "Creation of the configuration file in /etc/alertmanager/alertmanager.yml"
-echo "Enter an email for your basic receiver: "
+echo -e  "${GREEN}Creation of the configuration file in /etc/alertmanager/alertmanager.yml"
+echo -e  "${GREEN}Enter an email for your basic receiver: "
 read receiver
 
 while [[ -z $receiver ]]
 do
-	echo -e "\e[41m[ERROR] \e[49mEmpty string"
+	echo -e "${RED}[ERROR] Empty string"
 	read receiver
 done
 
@@ -94,7 +116,7 @@ inhibit_rules:
     target_match:
       severity: 'warning'
 #    equal: ['alertname', 'cluster', 'service']
-" >> /etc/alertmanager/alertmanager.yml
+" > /etc/alertmanager/alertmanager.yml
 
 echo "Creation of the service at /etc/systemd/system/alertmanager.service..."
 
