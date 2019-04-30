@@ -25,14 +25,14 @@ fi
 echo "dowloading the source using the link.."
 wget $link
 tar -xvf `echo $link | gawk -F"/" '{print $NF}'`
-mv `echo $link | gawk -F"/" '{split($NF, A, /[[:alnum:]]*\.tar/) ; print A[1]}'` $file_name
+mv `echo $link | gawk -F"/" '{split($NF, A, /[:alnum:]*\.tar/) ; print A[1]}'` $file_name
 
 sudo cp $file_name/alertmanager /usr/local/bin
 
 echo "Creation of the user alertmanager..."
 sudo useradd --no-create-home --shell /bin/false alertmanager
-sudo mkdir /etc/alertmanager
-sudo mkdir /var/lib/alertmanager/data 
+sudo mkdir -p /etc/alertmanager
+sudo mkdir -p /var/lib/alertmanager/data 
 sudo chown -R alertmanager. /var/lib/alertmanager
 
 echo "Configuration of alertmanager..."
@@ -74,7 +74,7 @@ route:
   receiver: 'email'
 
 # Can define several  'routes:' field which is a child route tree.
-# Theses routes can perfomr a regular expression were alert can match with this regex.
+# Theses routes can perfome a regular expression were alert can match with this regex.
 # Allow to catch alert and permit to define a special receiver for each alert (dev, infra, ...)
 # example: https://github.com/prometheus/alertmanager/blob/master/doc/examples/simple.yml
 
@@ -94,7 +94,7 @@ inhibit_rules:
     target_match:
       severity: 'warning'
 #    equal: ['alertname', 'cluster', 'service']
-" >> etc/alertmanager/alertmanager.yml
+" >> /etc/alertmanager/alertmanager.yml
 
 echo "Creation of the service at /etc/systemd/system/alertmanager.service..."
 
@@ -141,11 +141,10 @@ groups:
         severity: page
       annotations:
         summary: \"Instance {{ \$labels.instance }} down\"
-        description: \"{{ \$labels.instance }} of job {{ \$labels.job }} has been down for more than 1 minutes.
+        description: \"{{ \$labels.instance }} of job {{ \$labels.job }} has been down for more than 1 minutes.""
 " >> /etc/prometheus/rules.yml
 
 echo "Do you want to enable the alertmanager.service ? [y/N]"
-systemctl status alertmanager.service
 
 read answer
 
