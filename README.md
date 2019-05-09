@@ -138,3 +138,9 @@ groups:
 ```
 That's a rule that check if the instances on prometheus are down for more than 1 minutes, if they are, firing an alert on alertmanager.
 
+
+## Uninstall
+The uninstall program, uninstall all of the files that have been install with the previous scripts. Disable, stop and remove all of services linked to prometheus.
+
+## Setup
+The setup program is a menu that allow to user to install the scripts they want without having access to the source program.
