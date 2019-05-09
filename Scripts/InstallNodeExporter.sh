@@ -4,10 +4,20 @@
 # Author: Clément Allavena #
 ############################
 
+## Return 1 if you're not in sudo mode
+## Return 2 if a files is missing
+## Return 3 if a directory is missing
+## Return 4 if empty string
+## Return 5 if Unknown option error
+
+# <dependence>: #
+
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m'
 file_name=node_exporter
+link="https://github.com/prometheus/node_exporter/releases/download/v0.17.0/node_exporter-0.17.0.linux-amd64.tar.gz"
+is_activated="y"
 
 echo -e "${RED}[INFO]Make sure you execute this script in sudo mode"
 
@@ -17,21 +27,60 @@ then
 	exit 1
 fi
 
+display_help(){
+	cat <<EOF 
+usage: ${0##*/} [-h | --help] [-l | --link] <link> [-n | --not-activated]	[-f | --file-name] <new-file-name> 
+	-h | --help
+		Show all the option available.
+	-l | --link <link>
+		Download the version that match with <link>. Default: download the latest version of the module.
+	-n | --not-activated
+		If this option is on, the script don't activate the service. Default: the service is enabled.
+	-f | --file-name <new-file-name>
+		If this option is on, <new-file-name> will be the new file name of your downloaded files. Default: node_exporter
+EOF
+}
+
+while [ $# -ne 0]
+do
+	case "$1" in
+		-h | --help)
+			display_help
+			exit 0
+			;;
+		-n | --not-activated)
+			is_activated="n"
+			shift
+			;;
+		-f | --file-name)
+			if [[ -z "$2" ]]
+			then
+				echo "usage: $0 -f <new-file-name>"
+				echo -e "${RED} empty string ${NC}\n"
+				exit 4
+			fi
+			file_name="$2"
+			shift 2
+			;;
+		-l | --link)
+			if [[ -z "$2" ]]
+			then
+				echo "usage: $0 -l <link>"
+				echo -e "${RED} empty string ${NC}\n"
+				exit 4
+			fi
+			link="$2"
+			shift 2
+			;;
+		-*)
+			echo "Error: Unknow option:$1" >&2
+			display_help
+			exit 5
+			;;
+	esac
+done
+
 useradd --no-create-home --shell /bin/false/ node_exporter
-
-echo "Go to https://github.com/prometheus/node_exporter/releases/ and get the latest download link for Linux binary "
-
-read link
-
-echo "Is this the good link ? $link"
-echo "[y/N]: "
-read answer
-
-if [[ $answer =~ [nN].* ]] || [[ -z $answer ]]
-then
-  exit 1
-fi
-
 
 echo -e "${GREEN}[INFO]dowloading the source using the link.."
 wget $link                                                                                                                                                                           
@@ -66,22 +115,9 @@ sudo systemctl start node_exporter
 
 echo -e "${GREEN}[INFO]Check if the status is alright "
 sudo systemctl status node_exporter
-echo -e "${GREEN}[INFO]do you want to enable the service ? [y/N]"
-read answer
 
-
-if [[ $answer =~ [nN].* ]] || [[ -z $answer ]]
+if [[ $is_activated == "y" ]]
 then
-  exit 1
+	sudo systemctl enable node_exporter
 fi
 
-if [[ -z $answer  ]] || [[ $answer =~ [nN].* ]]
-then
-	echo -e "${GREEN}[INFO]The service is not enable"
-	echo -e "${GREEN}[INFO]Don't forget to add a job_name: 'node_exporter' to the configuration file of prometheus! (cf README)"
-	exit 0
-fi
-
-sudo systemctl enable node_exporter
-
-echo -e "${GREEN}[INFO]Don't forget to add a job_name: 'node_exporter' to the configuration file of prometheus! (cf README)"

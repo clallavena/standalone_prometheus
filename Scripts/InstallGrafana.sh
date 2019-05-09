@@ -1,5 +1,11 @@
 #!/bin/bash
 
+## Return 1 if you're not in sudo mode
+## Return 2 if a files is missing
+## Return 3 if a directory is missing
+
+# <dependence>: #
+
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m'
