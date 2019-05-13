@@ -214,7 +214,7 @@ groups:
       annotations:
         summary: \"Instance {{ \$labels.instance }} down\"
         description: \"{{ \$labels.instance }} of job {{ \$labels.job }} has been down for more than 1 minutes.""
-" >> /etc/prometheus/rules.yml
+" > /etc/prometheus/rules.yml
 
 if [[ $is_activated == "y"  ]] then
 	sudo systemctl enable alertmanagers
