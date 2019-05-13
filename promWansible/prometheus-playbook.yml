@@ -1,8 +1,8 @@
 ---
-- hosts: all
+- hosts: local
   become: true
   vars_files:
-    - prometheus.vars.yml
+    - /etc/ansible/group_vars/prometheus.vars.yml
 
   tasks:
     
@@ -35,16 +35,45 @@
       remote_src: yes
       mode: 0755
   
+  - name: Creates directory
+    file: 
+      path: "/var/lib/prometheus/"
+      state: directory
+      owner: "{{userId}}"
+      group: "{{groupId}}"
+      mode: 0755
+  
+  - name: Creates directory
+    file: 
+      path: "/etc/prometheus/"
+      state: directory
+      owner: "{{userId}}"
+      group: "{{groupId}}"
+      mode: 0755
+  
+  - name: Copy prometheus console file to /etc/prometheus
+    copy:
+      src: "/tmp/prometheus-{{ version }}.linux-amd64/{{ item }}"
+      dest: "/etc/prometheus"
+      owner: "{{userId}}"
+      group: "{{groupId}}"
+      mode: 0755
+    with_items:
+      ['consoles', 'console_libraries']
+
   - name: Delete prometheus tmp folder
     file:
       path: '/tmp/prometheus-{{ version }}.linux-amd64'
       state: absent
-  
+
   - name: config file
     template:
       src: prometheus.conf.j2
-      dest: /etc/prometheus/prometheus.conf
-  
+      dest: /etc/prometheus/prometheus.yml
+
+  - name: set prometheus as the owner of these files
+    shell: chown prometheus. /usr/local/bin/prometheus /etc/prometheus/prometheus.yml /var/lib/prometheus/ /etc/prometheus/consoles /etc/prometheus/
+ 
   - name: Copy systemd init file
     template:
       src: init.service_prom.j2
@@ -57,16 +86,16 @@
       state: started
       enabled: yes
   
-   - name: Check if prometheus is accessible
+  - name: Check if prometheus is accessible
     uri:
       url: http://localhost:9090
       method: GET
       status_code: 200
 
-- hosts: all
+- hosts: local
   become: true
   vars_files:
-    - node_exporter.vars.yml
+    - /etc/ansible/group_vars/node_exporter.vars.yml
 
   tasks:
 
@@ -76,13 +105,13 @@
 
   - name: Creating node_exporter user
     user:
-    name: "{{userId}}"
-    group: "{{groupId}}"
-    system: yes
-    shell: "/sbin/nologin"
-    comment: "{{userId}} nologin User"
-    createhome: "no"
-    state: present
+      name: "{{userId}}"
+      group: "{{groupId}}"
+      system: yes
+      shell: "/sbin/nologin"
+      comment: "{{userId}} nologin User"
+      createhome: "no"
+      state: present
 
   - name: Install prometheus node exporter
     unarchive:
