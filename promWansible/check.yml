@@ -1,0 +1,25 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - yum_repository:
+        name: epel
+        description: EPEL YUM repo
+        baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+        gpgcheck: no
+    - yum_repository:
+        name: fgislurm
+        description: FGI / IDRIS YUM repo
+        baseurl: http://idris.fgi.csc.fi/fgci7/x86_64/fgcislurm1711/
+        gpgcheck: no
+    - yum:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+        - ansible
+        - wget        
+        - python36
+        - python36-virtualenv
+        - python36-numpy
+        - python36-pip

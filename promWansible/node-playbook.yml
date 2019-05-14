@@ -1,5 +1,5 @@
 ---
-- hosts: local
+- hosts: nodes
   become: true
   vars_files:
     - /etc/ansible/group_vars/node_exporter.vars.yml
