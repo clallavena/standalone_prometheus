@@ -83,7 +83,7 @@
   - name: Start prometheus service
     service:
       name: prometheus
-      state: started
+      state: restart
       enabled: yes
   
   - name: Check if prometheus is accessible
