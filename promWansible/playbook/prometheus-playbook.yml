@@ -68,7 +68,7 @@
 
   - name: config file
     template:
-      src: prometheus.conf.j2
+      src: ../templates/prometheus.conf.j2
       dest: /etc/prometheus/prometheus.yml
 
   - name: set prometheus as the owner of these files
@@ -76,15 +76,19 @@
  
   - name: Copy systemd init file
     template:
-      src: init.service_prom.j2
+      src: ../templates/init.service_prom.j2
       dest: /etc/systemd/system/prometheus.service
     notify: systemd_reload
   
   - name: Start prometheus service
     service:
       name: prometheus
-      state: restart
+      state: restarted
       enabled: yes
+
+  - name: waiting for the service restart
+    pause:
+      seconds: 15
   
   - name: Check if prometheus is accessible
     uri:
@@ -117,3 +121,94 @@
     service:
       name: grafana-server
       enabled: yes
+
+- hosts: local
+  become: true
+  vars_files:
+    - /etc/ansible/group_vars/alertmanager.vars.yml
+
+  tasks:
+  
+  - name: Creating alertmanager user group
+    group: name="{{groupId}}"
+    become: true
+
+  - name: Creating alertmanager user
+    user:
+      name: "{{userId}}"
+      group: "{{groupId}}"
+      system: yes
+      shell: "/sbin/nologin"
+      comment: "{{userId}} nologin User"
+      createhome: "no"
+      state: present
+
+  - name: Install alertmanager
+    unarchive:
+      src: "https://github.com/prometheus/alertmanager/releases/download/v{{ version }}/alertmanager-{{ version }}.linux-amd64.tar.gz"
+      dest: /tmp/
+      remote_src: yes
+
+  - name: Creates directory
+    file:
+      path: "/var/lib/alertmanager/data"
+      state: directory
+      owner: "{{userId}}"
+      group: "{{groupId}}"
+      mode: 0755
+
+  - name: Creates directory
+    file:
+      path: "/etc/alertmanager/"
+      state: directory
+      owner: "{{userId}}"
+      group: "{{groupId}}"
+      mode: 0755
+
+  - name: Copy alertmanager file to bin
+    copy:
+      src: "/tmp/alertmanager-{{ version }}.linux-amd64/alertmanager"
+      dest: "/usr/local/bin/alertmanager"
+      owner: "{{userId}}"
+      group: "{{groupId}}"
+      remote_src: yes
+      mode: 0755
+
+  - name: Delete prometheus tmp folder
+    file:
+      path: '/tmp/alertmanager-{{ version }}.linux-amd64'
+      state: absent
+
+  - name: config file
+    template:
+      src: ../templates/alertmanager.conf.j2
+      dest: /etc/alertmanager/alertmanager.yml
+
+  - name: Copy systemd init file
+    template:
+      src: ../templates/init.service_alertmanager.j2
+      dest: /etc/systemd/system/alertmanager.service
+    notify: systemd_reload
+
+  - name: set alertmanager as the owner of these files
+    command: chown alertmanager. /usr/local/bin/alertmanager /etc/alertmanager/alertmanager.yml
+
+  - name: Started alertmanager service
+    service:
+      name: prometheus
+      state: restarted
+      enabled: yes
+
+  - name: waiting for the service restart
+    pause:
+      seconds: 15
+
+  - name: Check if alertmanager is accessible
+    uri:
+      url: http://localhost:9093
+      method: GET
+      status_code: 200
+
+  handlers:
+    - name: systemd_reload
+      command: systemctl daemon-reload

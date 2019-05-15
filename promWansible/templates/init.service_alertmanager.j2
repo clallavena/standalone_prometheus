@@ -1,0 +1,14 @@
+[Unit]
+Description=AlertManager
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User={{ userId }}
+Group={{ groupId }}
+Type=simple
+ExecStart={{ exec_command }}
+
+[Install]
+WantedBy=mutli-user.target_match
+
