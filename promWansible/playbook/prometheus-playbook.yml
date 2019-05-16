@@ -1,5 +1,5 @@
 ---
-- hosts: local
+- hosts: prometheus
   become: true
   vars_files:
     - /etc/ansible/group_vars/prometheus.vars.yml
@@ -96,7 +96,7 @@
       method: GET
       status_code: 200
 
-- hosts: local
+- hosts: prometheus
   become: true
   vars_files: 
     - /etc/ansible/group_vars/grafana.vars.yml
@@ -122,7 +122,7 @@
       name: grafana-server
       enabled: yes
 
-- hosts: local
+- hosts: prometheus
   become: true
   vars_files:
     - /etc/ansible/group_vars/alertmanager.vars.yml

@@ -1,0 +1,20 @@
+---
+- hosts: prometheus
+  become: yes
+
+  tasks:
+  - name: check if prometheus config file exist
+    stat:
+      path: /etc/prometheus/prometheus.yml
+    register: result
+
+  - name: check if prometheus config has changed
+    template:
+      src: ../templates/prometheus.conf.j2
+      dest: /etc/prometheus/prometheus.yml
+    register: template
+    when: result.stat.exists == True
+
+  - name: reload the configuration
+    command: curl -X POST http://localhost:9090/-/reload
+    when: template.changed == true
