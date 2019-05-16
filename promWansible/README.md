@@ -12,4 +12,6 @@ In these diretories, you can find the variable of each tasks (group\_vars) and t
 
 **node-playbook.yml**: is a playbook ansible that install and configure node explorer on hosts that you want.
 
+**config-check.yml**: is a playbook ansible that check if the actual configuration of prometheus is matching the template. If not, changed it for matching the template. Then reload the configuration without stoping the service.
+
 **check.yml**: is a playbook ansible that you should launch first. It allowed you to check and install the correct packages for your installation (ansible, epel for yum etc...)
