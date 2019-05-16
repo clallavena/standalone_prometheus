@@ -7,3 +7,6 @@
 - name: systemd_reload
   command: systemctl daemon-reload
   listen: systemd_reload
+
+- name: reload conf prometheus
+  command: curl -X POST http://localhost:9090/-/reload

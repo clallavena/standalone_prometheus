@@ -1,0 +1,8 @@
+---
+version: '0.17.0'
+userId: 'alertmanager'
+groupId: 'alertmanager'
+sender: 'alertmanager@dsi.uca.fr'
+smtp_host: 'mtarelay.dsi.uca.fr:25'
+receiver: 'clement.allavena@uca.fr'
+exec_command: '/usr/local/bin/alertmanager \ --config.file /etc/alertmanager/alertmanager.yml \ --storage.path /var/lib/alertmanager/data'
