@@ -1,0 +1,11 @@
+groups:
+  - name: disk_overload
+    rules: 
+    - alert: DiskOverload 
+      expr: (100 -  ((node_filesystem_free_bytes{instance="127.0.0.1:9100", device="/dev/vda1"} * 100) / node_filesystem_size_bytes{instance="127.0.0.1:9100", device="/dev/vda1"})) > 90
+      for: 1m 
+      labels: 
+        severity: page 
+      annotations: 
+        summary: "Instance {{ $labels.instance }} has an overload on his disk: {{ $labels.device }} at {{ $labels.mountpoint }}"
+        description: "{{ $labels.device }} of {{ $labels.mountpoint }} has been overloaded for more than 1 minutes. Value: {{ $value }}"
