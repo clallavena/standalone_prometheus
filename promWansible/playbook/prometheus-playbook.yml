@@ -1,5 +1,7 @@
 ---
 - hosts: prometheus
+  tags: 
+  - alertmanager
   become: true
   vars_files:
     - /etc/ansible/group_vars/alertmanager.vars.yml
@@ -92,6 +94,8 @@
       command: systemctl daemon-reload
 
 - hosts: prometheus
+  tags:
+  - prometheus
   become: true
   vars_files:
     - /etc/ansible/group_vars/prometheus.vars.yml
@@ -117,6 +121,7 @@
       src: "https://github.com/prometheus/prometheus/releases/download/v{{ version }}/prometheus-{{ version }}.linux-amd64.tar.gz"
       dest: /tmp/
       remote_src: yes
+    tags: install
   
   - name: Copy prometheus file to bin
     copy:
@@ -126,6 +131,7 @@
       group: "{{groupId}}"
       remote_src: yes
       mode: 0755
+    tags: install
   
   - name: Creates directory
     file: 
@@ -160,11 +166,13 @@
       mode: 0755
     with_items:
       ['consoles', 'console_libraries']
+    tags: install
 
   - name: Delete prometheus tmp folder
     file:
       path: '/tmp/prometheus-{{ version }}.linux-amd64'
       state: absent
+    tags: install
 
   - name: config file
     template:
@@ -173,9 +181,6 @@
 
   - name: set prometheus as the owner of these files
     shell: chown prometheus. /usr/local/bin/prometheus /etc/prometheus/prometheus.yml /var/lib/prometheus/ /etc/prometheus/consoles /etc/prometheus/
-
-  - debug:
-      var: playbook_dir
 
   - name: Copy up.rule file
     copy:
@@ -208,6 +213,8 @@
       status_code: 200
 
 - hosts: prometheus
+  tags:
+  - grafana
   become: true
   vars_files: 
     - /etc/ansible/group_vars/grafana.vars.yml
