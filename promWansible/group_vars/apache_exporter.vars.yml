@@ -1,0 +1,6 @@
+---
+serviceName: 'apache_exporter'
+groupId: 'apache_exporter'
+userId: 'apache_exporter'
+exec_command: /usr/local/bin/apache_exporter
+version: '0.6.0'

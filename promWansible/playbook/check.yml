@@ -12,6 +12,8 @@
         description: FGI / IDRIS YUM repo
         baseurl: http://idris.fgi.csc.fi/fgci7/x86_64/fgcislurm1711/
         gpgcheck: no
+        state: absent
+
     - yum:
         name: "{{ packages }}"
         state: present

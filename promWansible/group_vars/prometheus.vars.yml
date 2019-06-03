@@ -3,5 +3,5 @@ serviceName: 'prometheus'
 userId: 'prometheus'
 groupId: 'prometheus'
 exec_command: "/usr/local/bin/prometheus --config.file /etc/prometheus/prometheus.yml --storage.tsdb.path /var/lib/prometheus/ --web.console.templates=/etc/prometheus/consoles --web.console.libraries=/etc/prometheus/console_libraries --web.enable-lifecycle"
-version: '2.9.2'
+version: '2.10.0'
 

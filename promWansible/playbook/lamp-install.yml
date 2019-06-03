@@ -1,0 +1,41 @@
+---
+- hosts: apache
+  become: yes
+ 
+  tasks:
+  
+  - name: install all the necessary package for Lamp
+    yum:
+      name: "{{ packages }}"
+    vars:
+      packages:
+      - httpd
+      - php
+      - php-mysql
+      - mariadb-server
+      - mariadb
+      - php-gd
+      - php-pdo
+
+  - name: autorize httpd to write on apache directories
+    command: setsebool -P httpd_unified on
+
+  - name: enable services
+    command: systemctl enable httpd
+
+  - name: enable services
+    command: systemctl enable mariadb
+
+  - name: start services
+    command: systemctl start httpd
+
+  - name: start services
+    command: systemctl start mariadb
+
+  - name: copy apache configuration 
+    command: cp /etc/httpd/conf/httpd.conf ~/httpd.conf.backup
+
+  - name: restart httpd
+    systemd:
+      state: restarted
+      name: httpd
