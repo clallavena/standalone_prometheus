@@ -1,0 +1,56 @@
+---
+- hosts: apache
+  become: true
+
+  tasks:
+
+  - name: "Creating {{name}}_exporter user group"
+    group: name="{{groupId}}"
+    become: true
+
+  - name: "Creating {{name}}_exporter user"
+    user:
+      name: "{{userId}}"
+      group: "{{groupId}}"
+      system: yes
+      shell: "/sbin/nologin"
+      comment: "{{userId}} nologin User"
+      createhome: "no"
+      state: present
+
+  - name: "Install prometheus {{name}} exporter"
+    unarchive:
+      src: "https://github.com/{{gitAuthor}}/{{name}}_exporter/releases/download/v{{version}}/{{name}}_exporter-{{version}}.linux-amd64.tar.gz"
+      dest: /tmp/
+      remote_src: yes
+
+  - name: "Copy prometheus {{name}} exporter file to bin"
+    copy:
+      src: "/tmp/{{name}}_exporter-{{ version }}.linux-amd64/{{name}}_exporter"
+      dest: "/usr/local/bin/{{name}}_exporter"
+      owner: "{{userId}}"
+      group: "{{groupId}}"
+      remote_src: yes
+      mode: 0755
+
+  - name: "Delete {{name}} exporter tmp folder"
+    file:
+      path: '/tmp/{{name}}_exporter-{{ version }}.linux-amd64'
+      state: absent
+      
+  - name: Copy systemd init file
+    template:
+      src: ../templates/init.service_node.j2
+      dest: "/etc/systemd/system/{{name}}_exporter.service"
+
+  - name: "Start {{name}}_exporter service"
+    service:
+      name: "{{name}}_exporter"
+      state: started
+      enabled: yes
+
+  - name: Check if "{{name}}" exporter emits metrics
+    uri:
+      url: "http://127.0.0.1:{{port}}/metrics"
+      method: GET
+      status_code: 200

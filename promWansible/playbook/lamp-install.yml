@@ -35,6 +35,18 @@
   - name: copy apache configuration 
     command: cp /etc/httpd/conf/httpd.conf ~/httpd.conf.backup
 
+  - name: Enable the server status on apache
+    blockinfile:
+      path: /etc/httpd/conf/httpd.conf
+      block: |
+        <IfModule mod_status.c>
+             ExtendedStatus On
+           <Location /server-status>
+             SetHandler server-status
+             Allow from all
+          </Location>
+        </IfModule>
+
   - name: restart httpd
     systemd:
       state: restarted

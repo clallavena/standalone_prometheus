@@ -1,4 +1,7 @@
 ---
+name: 'prometheus'
+gitAuthor: 'prometheus'
+port: '9090'
 serviceName: 'prometheus'
 userId: 'prometheus'
 groupId: 'prometheus'

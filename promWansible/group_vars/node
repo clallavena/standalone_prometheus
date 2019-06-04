@@ -1,4 +1,7 @@
 ---
+name: 'node'
+gitAuthor: 'prometheus'
+port: '9100'
 serviceName: 'node_exporter'
 groupId: 'node_exporter'
 userId: 'node_exporter'

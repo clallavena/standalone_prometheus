@@ -1,4 +1,7 @@
 ---
+name: 'apache'
+gitAuthor: 'Lusitaniae'
+port: '9117'
 serviceName: 'apache_exporter'
 groupId: 'apache_exporter'
 userId: 'apache_exporter'

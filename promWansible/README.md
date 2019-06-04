@@ -6,6 +6,40 @@ First of all, you have to copy/add handler/ and group\_vars/ directories to you 
 
 In these diretories, you can find the variable of each tasks (group\_vars) and the handler for catching end of tasks (handler)
 
+## How to add an exporter ?
+
+You have to add in group\_vars of your /etc/ansible, the new exporter that you want to add. And you have to name it by the same name as in your **host** file.
+In your host file, add a group of host that you want to have this exporter.
+
+Then in your variable file in your group\_vars directory you have to complete this variable:
+
+```yml
+name: ''
+gitAuthor: ''
+port: ''
+serviceName: ''
+groupId: ''
+userId: ''
+exec_command: 
+version: ''
+```
+
+Example for apache\_exporter:
+
+```yml
+name: 'apache'
+gitAuthor: 'Lusitaniae'
+port: '9117'
+serviceName: 'apache_exporter'
+groupId: 'apache_exporter'
+userId: 'apache_exporter'
+exec_command: /usr/local/bin/apache_exporter
+version: '0.6.0'
+```
+
+After that, you will have to play the **global\_exporter** playbook.
+Make sure that the **host** in your playbook is the exporter that you want to install
+
 ### Scripts in details
 
 **prometheus-playbook.yml**: is a playbook ansible that install and configure grafana and prometheus in you main server. For the configuration, look at the template prometheus.conf.j2 at template/.

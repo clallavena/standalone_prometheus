@@ -97,8 +97,6 @@
   tags:
   - prometheus
   become: true
-  vars_files:
-    - /etc/ansible/group_vars/prometheus.vars.yml
 
   tasks:
     

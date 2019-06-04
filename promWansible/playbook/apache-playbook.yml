@@ -1,8 +1,6 @@
 ---
 - hosts: apache
   become: true
-  vars_files:
-    - /etc/ansible/group_vars/apache_exporter.vars.yml
 
   tasks:
 
@@ -50,6 +48,23 @@
       name: apache_exporter
       state: started
       enabled: yes
+
+  - name: Enable the server status on apache
+    blockinfile:
+      path: /etc/httpd/conf/httpd.conf
+      block: |
+        <IfModule mod_status.c>
+             ExtendedStatus On
+           <Location /server-status>
+             SetHandler server-status
+             Allow from all
+          </Location>
+        </IfModule>
+
+  - name: restart httpd service
+    service:
+      name: httpd
+      state: restarted
 
   - name: Check if node exporter emits metrics
     uri:
