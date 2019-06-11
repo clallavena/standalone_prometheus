@@ -7,8 +7,6 @@
     stat:
       path: /etc/systemd/system/prometheus.service
     register: result
-  - debug:
-      var: result
 
   - name: check if prometheus.service config has changed
     template:
@@ -16,9 +14,6 @@
       dest: /etc/systemd/system/prometheus.service
     register: template
     when: result.stat.exists == True
-
-  - debug:
-      var: template
 
   - name: restart systemd
     command: systemctl daemon-reload

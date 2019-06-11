@@ -19,6 +19,14 @@ scrape_configs:
     scrape_interval: 15s
     static_configs:
       - targets: ['localhost:3000']
+  - job_name: 'apache'
+    scrape_interval: 15s
+    static_configs:
+      - targets:
+      {% for host in groups['apache'] %}
+        - '{{ host }}:9117'
+      {% endfor %}
+
   - job_name: 'node_exporter'
     scrape_interval: 10s
     static_configs:

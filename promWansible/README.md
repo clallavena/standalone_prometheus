@@ -40,6 +40,11 @@ version: '0.6.0'
 After that, you will have to play the **global\_exporter** playbook.
 Make sure that the **host** in your playbook is the exporter that you want to install
 
+After all add of exporters make sure to modify the configuration template of Prometheus in the **templates/** directories. And add or remove what you want to scrape in prometheus. After modifying this file, play the **config-check** playbook, it check and reload the configuration of prometheus without stoping the service.
+
+### Add Lamp
+Playbook are available for the installation of lamp, **lamp\-install** install all the necessary packets for Lamp and allow the server status.
+
 ### Scripts in details
 
 **prometheus-playbook.yml**: is a playbook ansible that install and configure grafana and prometheus in you main server. For the configuration, look at the template prometheus.conf.j2 at template/.
@@ -49,3 +54,7 @@ Make sure that the **host** in your playbook is the exporter that you want to in
 **config-check.yml**: is a playbook ansible that check if the actual configuration of prometheus is matching the template. If not, changed it for matching the template. Then reload the configuration without stoping the service.
 
 **check.yml**: is a playbook ansible that you should launch first. It allowed you to check and install the correct packages for your installation (ansible, epel for yum etc...)
+
+**global\_exporter**: is a playbook ansible that can install any exporter. (cf. How to add an exporter)
+
+**init-check**: is a playbook ansible that check if the daemon has been modified. If it has, reload it.
