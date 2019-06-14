@@ -6,6 +6,7 @@
 This project was made during my internhsip of two year university diploma in IT (DUT), at Université Clermont Auvergne.
 
 They are different directories:
+
 **Scripts**: In this directory you will find the Bash and Perl scripts that allow you to install Prometheus with its components such as Grafana and AlertManager with a default configuration. You will find a README inside this directory that will explain you the good practice.
 
 **grafana**: This directory contain different dashboard in JSON format for grafana. This is dashboard that i've made during my internship.
