@@ -11,9 +11,9 @@ They are different directories:
 
 **grafana**: This directory contain different dashboard in JSON format for grafana. This is dashboard that i've made during my internship.
 
-**promWansible**: This directory contain a full setup of Prometheus and its components using Ansible. This part of the project is thought for being generic. The README in this directory will give you the good practice and How it works.
+**promWansible**: This directory contain a full setup of Prometheus and its components using Ansible. The README in this directory will give you the good practice and How it works.
 
-**rules**: This directory contain some rules for Prometheus.
+**rules**: This directory contain some basic rules for Prometheus.
 
 ---
 
