@@ -14,8 +14,8 @@ For each script:
 
 ## **InstallPrometheus**
 InstallPrometheus is a bash script that install a basic configuration of Prometheus.
-The script can be dynamic, that mean that's the script can be dynamic with option, it is no longer interactive, because of the automatization of the installation with Ansible we have dropped the interactive version for made this version with option.
-A prometheus user is created and his the owner of /etc/prometheus; /var/lib/prometheus (datastorage)
+You can specify the version you want to install with -l and --link option, but by default it install the v2.9.2 (can be changed in the script).
+A prometheus user is created and set him the owner of /etc/prometheus; /var/lib/prometheus (datastorage)
 
 Here is the help view of the option for InstallPrometheus script.
 ```
