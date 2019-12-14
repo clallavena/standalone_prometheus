@@ -55,6 +55,6 @@ Playbook are available for the installation of lamp, **lamp\-install** install a
 
 **check.yml**: is a playbook ansible that you should launch first. It allowed you to check and install the correct packages for your installation (ansible, epel for yum etc...)
 
-**global\_exporter**: is a playbook ansible that can install any exporter. (cf. [How to add an exporter?](https://gitlab.dsi.uca.fr/infra-sys/monitoring/tree/master/promWansible#how-to-add-an-exporter-))
+**global\_exporter**: is a playbook ansible that can install any exporter. (cf. [How to add an exporter?](https://github.com/clallavena/standalone_prometheus/tree/master/promWansible#how-to-add-an-exporter-))
 
 **init-check**: is a playbook ansible that check if the daemon has been modified. If it has, reload it.
